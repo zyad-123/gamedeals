@@ -5,15 +5,272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Deals Browser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 24px 16px;
+            line-height: 1.4;
+            background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+            color: #e5e7eb;
+        }
+
+        .page-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px;
+            background: #1b2430;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            border: 1px solid #2c3a4f;
+        }
+
+        .page-card h1 {
+            font-size: 1.6rem;
+            margin: 0 0 8px;
+            color: #f8fafc;
+        }
+
+        .page-card p {
+            font-size: 0.95rem;
+            margin: 6px 0;
+            color: #d1d5db;
+        }
+
+        .search-shell {
+            display: flex;
+            justify-content: center;
+            margin: 12px 0 24px;
+        }
+
+        .search-bar-wrap {
+            position: relative;
+            width: min(100%, 700px);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            width: min(100%, 700px);
+            border: 1px solid #3b4a61;
+            border-radius: 999px;
+            padding: 8px 10px 8px 16px;
+            background: #243447;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 0;
+            margin: 0;
+            min-width: 0;
+            font-size: 16px;
+            background: transparent;
+            color: #f8fafc;
+        }
+
+        .search-bar button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: #66c0f4;
+            color: #08131f;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .search-bar button:hover {
+            background: #8edbff;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #243447;
+            border: 1px solid #3b4a61;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+            overflow: hidden;
+            display: none;
+        }
+
+        .search-suggestion-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #f8fafc;
+            padding: 10px 12px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .search-suggestion-item:hover {
+            background: #2f4259;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0 12px;
+            color: #9ca3af;
+            overflow-x: auto;
+        }
+
+        .suggestions span {
+            font-weight: 700;
+            margin-right: 6px;
+            align-self: center;
+            white-space: nowrap;
+            color: #f8fafc;
+            letter-spacing: 0.02em;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 110px;
+            border: 1px solid #3b4a61;
+            border-radius: 12px;
+            padding: 8px 10px;
+            background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
+            color: #f8fafc;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            font-weight: 600;
+            text-align: left;
+            flex: 0 0 auto;
+        }
+
+        .suggestion-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .suggestion-subtitle {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            font-weight: 500;
+            margin-top: 1px;
+        }
+
+        .suggestion-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-color: #66c0f4;
+            background: linear-gradient(135deg, #2f4259 0%, #263546 100%);
+        }
+
+        .price-suggestions {
+            margin-top: -4px;
+            margin-bottom: 24px;
+        }
+
+        #results {
+            margin-top: 16px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .deal {
+            border: 1px solid #3b4a61;
+            border-radius: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 200px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .deal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+            border-color: #66c0f4;
+        }
+
+        .deal img {
+            width: 100%;
+            height: 88px;
+            margin: 0 auto 6px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .deal h2 {
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.2;
+            color: #f8fafc;
+        }
+
+        .deal p {
+            font-size: 0.78rem;
+            margin: 0;
+            color: #d1d5db;
+        }
+
+        .deal a {
+            font-size: 0.78rem;
+            color: #66c0f4;
+            text-decoration: none;
+            margin-top: auto;
+        }
+
+        .sale {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .normal {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .savings {
+            color: #8edbff;
+        }
+
+        @media (max-width: 1000px) {
+            .results-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .results-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- content goes here -->
-</body>
-
-</html>
-
-<div class="page-card">
+    <div class="page-card">
     <div class="search-shell">
         <div class="search-bar-wrap">
             <div class="search-bar">
@@ -96,269 +353,9 @@
     <p id="status">Type a game title, then press Search deals.</p>
     <div id="results"></div>
 </div>
+</body>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 24px 16px;
-        line-height: 1.4;
-        background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
-        color: #e5e7eb;
-    }
-
-    .page-card {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 28px;
-        background: #1b2430;
-        border-radius: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        border: 1px solid #2c3a4f;
-    }
-
-    .page-card h1 {
-        font-size: 1.6rem;
-        margin: 0 0 8px;
-        color: #f8fafc;
-    }
-
-    .page-card p {
-        font-size: 0.95rem;
-        margin: 6px 0;
-        color: #d1d5db;
-    }
-
-    .search-shell {
-        display: flex;
-        justify-content: center;
-        margin: 12px 0 24px;
-    }
-
-    .search-bar-wrap {
-        position: relative;
-        width: min(100%, 700px);
-    }
-
-    .search-bar {
-        display: flex;
-        align-items: center;
-        width: min(100%, 700px);
-        border: 1px solid #3b4a61;
-        border-radius: 999px;
-        padding: 8px 10px 8px 16px;
-        background: #243447;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .search-bar input {
-        flex: 1;
-        border: none;
-        outline: none;
-        padding: 10px 0;
-        margin: 0;
-        min-width: 0;
-        font-size: 16px;
-        background: transparent;
-        color: #f8fafc;
-    }
-
-    .search-bar button {
-        border: none;
-        border-radius: 999px;
-        padding: 10px 16px;
-        background: #66c0f4;
-        color: #08131f;
-        cursor: pointer;
-        font-weight: 700;
-    }
-
-    .search-bar button:hover {
-        background: #8edbff;
-    }
-
-    .search-suggestions {
-        position: absolute;
-        top: calc(100% + 6px);
-        left: 0;
-        right: 0;
-        background: #243447;
-        border: 1px solid #3b4a61;
-        border-radius: 12px;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-        z-index: 10;
-        overflow: hidden;
-        display: none;
-    }
-
-    .search-suggestion-item {
-        width: 100%;
-        border: none;
-        background: transparent;
-        color: #f8fafc;
-        padding: 10px 12px;
-        text-align: left;
-        cursor: pointer;
-        font-size: 0.95rem;
-    }
-
-    .search-suggestion-item:hover {
-        background: #2f4259;
-    }
-
-    .suggestions {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 8px;
-        justify-content: center;
-        align-items: center;
-        margin: 0 0 12px;
-        color: #9ca3af;
-        overflow-x: auto;
-    }
-
-    .suggestions span {
-        font-weight: 700;
-        margin-right: 6px;
-        align-self: center;
-        white-space: nowrap;
-        color: #f8fafc;
-        letter-spacing: 0.02em;
-        font-size: 0.9rem;
-    }
-
-    .suggestion-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        min-width: 110px;
-        border: 1px solid #3b4a61;
-        border-radius: 12px;
-        padding: 8px 10px;
-        background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
-        color: #f8fafc;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        font-weight: 600;
-        text-align: left;
-        flex: 0 0 auto;
-    }
-
-    .suggestion-title {
-        font-size: 0.8rem;
-        font-weight: 700;
-    }
-
-    .suggestion-subtitle {
-        font-size: 0.7rem;
-        color: #9ca3af;
-        font-weight: 500;
-        margin-top: 1px;
-    }
-
-    .suggestion-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        border-color: #66c0f4;
-        background: linear-gradient(135deg, #2f4259 0%, #263546 100%);
-    }
-
-    .price-suggestions {
-        margin-top: -4px;
-        margin-bottom: 24px;
-    }
-
-    #results {
-        margin-top: 16px;
-    }
-
-    .results-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .deal {
-        border: 1px solid #3b4a61;
-        border-radius: 12px;
-        padding: 10px;
-        background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        min-height: 200px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .deal:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-        border-color: #66c0f4;
-    }
-
-    .deal img {
-        width: 100%;
-        height: 88px;
-        margin: 0 auto 6px;
-        border-radius: 8px;
-        object-fit: cover;
-    }
-
-    .deal h2 {
-        font-size: 0.95rem;
-        margin: 0;
-        line-height: 1.2;
-        color: #f8fafc;
-    }
-
-    .deal p {
-        font-size: 0.78rem;
-        margin: 0;
-        color: #d1d5db;
-    }
-
-    .deal a {
-        font-size: 0.78rem;
-        color: #66c0f4;
-        text-decoration: none;
-        margin-top: auto;
-    }
-
-    .sale {
-        font-weight: bold;
-        font-size: 1rem;
-        color: #ffffff;
-    }
-
-    .normal {
-        text-decoration: line-through;
-        color: #9ca3af;
-    }
-
-    .savings {
-        color: #8edbff;
-    }
-
-    @media (max-width: 1000px) {
-        .results-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 760px) {
-        .results-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 480px) {
-        .results-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
+</html>
 
 <script>
     const API = "https://www.cheapshark.com/api/1.0";
