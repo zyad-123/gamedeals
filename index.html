@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Deals Browser</title>
+</head>
+
+<body>
+    <!-- content goes here -->
+</body>
+
+</html>
+
+<div class="page-card">
+    <div class="search-shell">
+        <div class="search-bar-wrap">
+            <div class="search-bar">
+                <input id="query" type="text" value="hades" placeholder="e.g. hades, minecraft, portal 2"
+                    aria-label="Search for a game title">
+                <button id="searchBtn">Search deals</button>
+            </div>
+            <div id="searchSuggestions" class="search-suggestions" aria-label="Search suggestions"></div>
+        </div>
+    </div>
+
+    <div class="suggestions" aria-label="Popular games to search">
+        <span>Try:</span>
+        <button class="suggestion-btn" data-game="hades">
+            <span class="suggestion-title">Hades</span>
+            <span class="suggestion-subtitle">Action roguelike</span>
+        </button>
+        <button class="suggestion-btn" data-game="minecraft">
+            <span class="suggestion-title">Minecraft</span>
+            <span class="suggestion-subtitle">Creative sandbox</span>
+        </button>
+        <button class="suggestion-btn" data-game="portal 2">
+            <span class="suggestion-title">Portal 2</span>
+            <span class="suggestion-subtitle">Puzzle classic</span>
+        </button>
+        <button class="suggestion-btn" data-game="stardew valley">
+            <span class="suggestion-title">Stardew Valley</span>
+            <span class="suggestion-subtitle">Cozy farming</span>
+        </button>
+        <button class="suggestion-btn" data-game="terraria">
+            <span class="suggestion-title">Terraria</span>
+            <span class="suggestion-subtitle">Adventure sandbox</span>
+        </button>
+        <button class="suggestion-btn" data-game="baldurs gate 3">
+            <span class="suggestion-title">Baldur's Gate 3</span>
+            <span class="suggestion-subtitle">Epic RPG</span>
+        </button>
+        <button class="suggestion-btn" data-game="hollow knight">
+            <span class="suggestion-title">Hollow Knight</span>
+            <span class="suggestion-subtitle">Metroidvania</span>
+        </button>
+    </div>
+
+    <div class="suggestions price-suggestions" aria-label="Budget-based game suggestions">
+        <span>Budget:</span>
+        <button class="suggestion-btn" data-game="hades">
+            <span class="suggestion-title">$1–$3</span>
+            <span class="suggestion-subtitle">Cheap classics</span>
+        </button>
+        <button class="suggestion-btn" data-game="undertale">
+            <span class="suggestion-title">Under $5</span>
+            <span class="suggestion-subtitle">Starter deals</span>
+        </button>
+        <button class="suggestion-btn" data-game="celeste">
+            <span class="suggestion-title">$3–$6</span>
+            <span class="suggestion-subtitle">Indie favorites</span>
+        </button>
+        <button class="suggestion-btn" data-game="portal 2">
+            <span class="suggestion-title">$5–$10</span>
+            <span class="suggestion-subtitle">Great value</span>
+        </button>
+        <button class="suggestion-btn" data-game="terraria">
+            <span class="suggestion-title">$6–$15</span>
+            <span class="suggestion-subtitle">Best bargains</span>
+        </button>
+        <button class="suggestion-btn" data-game="stardew valley">
+            <span class="suggestion-title">$10–$20</span>
+            <span class="suggestion-subtitle">Popular picks</span>
+        </button>
+        <button class="suggestion-btn" data-game="minecraft">
+            <span class="suggestion-title">$20+</span>
+            <span class="suggestion-subtitle">Premium titles</span>
+        </button>
+    </div>
+
+    <h1>Game Deals Browser</h1>
+    <p><strong>Educational demo — prices are usually in USD and can change.</strong></p>
+    <p>Search a PC game title and see current store deals (via CheapShark).</p>
+
+    <p id="status">Type a game title, then press Search deals.</p>
+    <div id="results"></div>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 24px 16px;
+        line-height: 1.4;
+        background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+        color: #e5e7eb;
+    }
+
+    .page-card {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px;
+        background: #1b2430;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        border: 1px solid #2c3a4f;
+    }
+
+    .page-card h1 {
+        font-size: 1.6rem;
+        margin: 0 0 8px;
+        color: #f8fafc;
+    }
+
+    .page-card p {
+        font-size: 0.95rem;
+        margin: 6px 0;
+        color: #d1d5db;
+    }
+
+    .search-shell {
+        display: flex;
+        justify-content: center;
+        margin: 12px 0 24px;
+    }
+
+    .search-bar-wrap {
+        position: relative;
+        width: min(100%, 700px);
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        width: min(100%, 700px);
+        border: 1px solid #3b4a61;
+        border-radius: 999px;
+        padding: 8px 10px 8px 16px;
+        background: #243447;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 10px 0;
+        margin: 0;
+        min-width: 0;
+        font-size: 16px;
+        background: transparent;
+        color: #f8fafc;
+    }
+
+    .search-bar button {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: #66c0f4;
+        color: #08131f;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .search-bar button:hover {
+        background: #8edbff;
+    }
+
+    .search-suggestions {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        background: #243447;
+        border: 1px solid #3b4a61;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+        overflow: hidden;
+        display: none;
+    }
+
+    .search-suggestion-item {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: #f8fafc;
+        padding: 10px 12px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .search-suggestion-item:hover {
+        background: #2f4259;
+    }
+
+    .suggestions {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+        margin: 0 0 12px;
+        color: #9ca3af;
+        overflow-x: auto;
+    }
+
+    .suggestions span {
+        font-weight: 700;
+        margin-right: 6px;
+        align-self: center;
+        white-space: nowrap;
+        color: #f8fafc;
+        letter-spacing: 0.02em;
+        font-size: 0.9rem;
+    }
+
+    .suggestion-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 110px;
+        border: 1px solid #3b4a61;
+        border-radius: 12px;
+        padding: 8px 10px;
+        background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
+        color: #f8fafc;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        font-weight: 600;
+        text-align: left;
+        flex: 0 0 auto;
+    }
+
+    .suggestion-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .suggestion-subtitle {
+        font-size: 0.7rem;
+        color: #9ca3af;
+        font-weight: 500;
+        margin-top: 1px;
+    }
+
+    .suggestion-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-color: #66c0f4;
+        background: linear-gradient(135deg, #2f4259 0%, #263546 100%);
+    }
+
+    .price-suggestions {
+        margin-top: -4px;
+        margin-bottom: 24px;
+    }
+
+    #results {
+        margin-top: 16px;
+    }
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .deal {
+        border: 1px solid #3b4a61;
+        border-radius: 12px;
+        padding: 10px;
+        background: linear-gradient(135deg, #27374d 0%, #1f2d3d 100%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 200px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .deal:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+        border-color: #66c0f4;
+    }
+
+    .deal img {
+        width: 100%;
+        height: 88px;
+        margin: 0 auto 6px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .deal h2 {
+        font-size: 0.95rem;
+        margin: 0;
+        line-height: 1.2;
+        color: #f8fafc;
+    }
+
+    .deal p {
+        font-size: 0.78rem;
+        margin: 0;
+        color: #d1d5db;
+    }
+
+    .deal a {
+        font-size: 0.78rem;
+        color: #66c0f4;
+        text-decoration: none;
+        margin-top: auto;
+    }
+
+    .sale {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #ffffff;
+    }
+
+    .normal {
+        text-decoration: line-through;
+        color: #9ca3af;
+    }
+
+    .savings {
+        color: #8edbff;
+    }
+
+    @media (max-width: 1000px) {
+        .results-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 760px) {
+        .results-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 480px) {
+        .results-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    const API = "https://www.cheapshark.com/api/1.0";
+    const searchSuggestions = [
+        "hades",
+        "minecraft",
+        "portal 2",
+        "stardew valley",
+        "terraria",
+        "baldur's gate 3",
+        "hollow knight",
+        "celeste",
+        "undertale",
+        "dead cells"
+    ];
+    const featuredGames = [
+        "hades",
+        "minecraft",
+        "portal 2",
+        "stardew valley",
+        "terraria",
+        "baldur's gate 3",
+        "hollow knight",
+        "celeste",
+        "undertale",
+        "dead cells",
+        "counter strike global offensive",
+        "dota 2",
+        "team fortress 2",
+        "rust",
+        "warframe",
+        "subnautica",
+        "ori and the blind forest",
+        "the witcher 3",
+        "fallout new vegas",
+        "bioshock infinite",
+        "disco elysium",
+        "outer wilds",
+        "slay the spire",
+        "binding of isaac",
+        "rimworld",
+        "factorio",
+        "civilization vi",
+        "the binding of isaac",
+        "monkey island",
+        "cult of the lamb",
+        "hades",
+        "halo infinite"
+    ];
+
+    function updateSearchSuggestions() {
+        const input = document.getElementById("query");
+        const box = document.getElementById("searchSuggestions");
+        const value = input.value.trim().toLowerCase();
+
+        if (!value) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+        }
+
+        const matches = searchSuggestions.filter(function (item) {
+            return item.toLowerCase().includes(value);
+        }).slice(0, 10);
+
+        if (matches.length === 0) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+        }
+
+        box.innerHTML = matches.map(function (item) {
+            return '<button class="search-suggestion-item" type="button">' + item + '</button>';
+        }).join("");
+        box.style.display = "block";
+
+        box.querySelectorAll(".search-suggestion-item").forEach(function (button) {
+            button.addEventListener("click", function () {
+                input.value = button.textContent;
+                box.style.display = "none";
+                searchDeals();
+            });
+        });
+    }
+
+    async function fetchDeals(title) {
+        const url =
+            API +
+            "/deals?title=" +
+            encodeURIComponent(title) +
+            "&pageSize=10";
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Deals API error: " + response.status);
+        }
+        const data = await response.json();
+        console.log("deals", data);
+        return data;
+    }
+
+    function formatMoney(value) {
+        if (value === undefined || value === null || value === "") return "n/a";
+        return "$" + Number(value).toFixed(2);
+    }
+
+    function formatSavings(value) {
+        if (value === undefined || value === null || value === "") return "n/a";
+        return Math.round(Number(value)) + "% off";
+    }
+
+    function dealLink(dealID) {
+        return "https://www.cheapshark.com/redirect?dealID=" + encodeURIComponent(dealID);
+    }
+
+    async function loadFeaturedDeals() {
+        const el = document.getElementById("results");
+        el.innerHTML = "<p>Loading featured deals…</p>";
+
+        try {
+            const cards = await Promise.all(
+                featuredGames.slice(0, 20).map(async function (title) {
+                    try {
+                        const deals = await fetchDeals(title);
+                        const deal = deals && deals.length > 0 ? deals[0] : null;
+                        if (!deal) return null;
+                        return {
+                            title: deal.title || title,
+                            salePrice: deal.salePrice,
+                            normalPrice: deal.normalPrice,
+                            savings: deal.savings,
+                            thumb: deal.thumb,
+                            dealID: deal.dealID
+                        };
+                    } catch (error) {
+                        return null;
+                    }
+                })
+            );
+
+            const validCards = cards.filter(Boolean);
+            if (validCards.length === 0) {
+                el.innerHTML = "<p>No featured deals available right now.</p>";
+                return;
+            }
+
+            showDeals(validCards);
+            document.getElementById("status").textContent = "Featured deals from the API";
+        } catch (error) {
+            console.error(error);
+            el.innerHTML = "<p>Could not load featured deals.</p>";
+        }
+    }
+
+    function showDeals(deals) {
+        const el = document.getElementById("results");
+        if (!deals || deals.length === 0) {
+            el.innerHTML = "<p>No deals found. Try another title (e.g. celeste, stardew).</p>";
+            return;
+        }
+
+        el.innerHTML = '<div class="results-grid">' + deals
+            .map(function (deal) {
+                const thumb = deal.thumb
+                    ? '<img src="' + deal.thumb + '" alt="" width="84" height="32">'
+                    : "";
+                const link = deal.dealID
+                    ? '<p><a href="' + dealLink(deal.dealID) + '" target="_blank" rel="noopener">View deal</a></p>'
+                    : "";
+
+                return (
+                    '<div class="deal">' +
+                    thumb +
+                    "<h2>" + (deal.title || "Untitled") + "</h2>" +
+                    '<p><span class="sale">' + formatMoney(deal.salePrice) + "</span> " +
+                    '<span class="normal">' + formatMoney(deal.normalPrice) + "</span> " +
+                    '<span class="savings">(' + formatSavings(deal.savings) + ")</span></p>" +
+                    link +
+                    "</div>"
+                );
+            })
+            .join("") + '</div>';
+    }
+
+    async function searchDeals() {
+        const query = document.getElementById("query").value.trim();
+        if (!query) {
+            document.getElementById("status").textContent = "Please type a game title.";
+            return;
+        }
+
+        document.getElementById("status").textContent = "Searching deals…";
+        document.getElementById("results").innerHTML = "";
+
+        try {
+            const deals = await fetchDeals(query);
+            document.getElementById("status").textContent =
+                "Found " + deals.length + " deal(s) for \"" + query + "\".";
+            showDeals(deals);
+        } catch (error) {
+            console.error(error);
+            document.getElementById("status").textContent =
+                error.message || "Something went wrong.";
+        }
+    }
+
+    loadFeaturedDeals();
+
+    document.getElementById("query").addEventListener("input", updateSearchSuggestions);
+    document.getElementById("query").addEventListener("focus", updateSearchSuggestions);
+    document.addEventListener("click", function (event) {
+        const box = document.getElementById("searchSuggestions");
+        if (!event.target.closest(".search-bar-wrap")) {
+            box.style.display = "none";
+        }
+    });
+
+    document.getElementById("searchBtn").addEventListener("click", searchDeals);
+
+    document.querySelectorAll(".suggestion-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const value = button.getAttribute("data-game");
+            document.getElementById("query").value = value;
+            searchDeals();
+        });
+    });
+</script>
